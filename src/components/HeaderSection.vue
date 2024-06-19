@@ -1,8 +1,7 @@
 <script>
-// Import Swiper core and required modules
-import { Navigation, Pagination, Scrollbar, Autoplay, A11y } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/vue'
-import { ref, onMounted } from 'vue'
+import { Navigation, Pagination, Scrollbar, Autoplay, A11y } from 'swiper/modules'
+import { ref, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 
@@ -33,6 +32,8 @@ export default {
     const selectedMovie = ref(null)
     const trailerUrl = ref('')
     const showPreview = ref(false)
+
+    const swiperInstance = ref(null)
 
     const fetchMovies = async () => {
       try {
@@ -84,6 +85,12 @@ export default {
       trailerUrl.value = ''
     }
 
+    const playTrailer = () => {
+      if (selectedMovie.value) {
+        fetchTrailer(selectedMovie.value.id)
+      }
+    }
+
     const searchMovies = async () => {
       if (searchQuery.value.trim() === '') {
         searchResults.value = []
@@ -106,16 +113,23 @@ export default {
       showResults.value = false
     }
 
-    onMounted(() => {
-      fetchMovies()
+    onMounted(async () => {
+      await fetchMovies()
+      nextTick(() => {
+        if (swiperInstance.value) {
+          swiperInstance.value.update()
+        }
+      })
     })
 
     const onSwiper = (swiper) => {
-      console.log(swiper)
+      swiperInstance.value = swiper
     }
+
     const onSlideChange = () => {
       console.log('slide change')
     }
+
     return {
       onSwiper,
       onSlideChange,
@@ -130,11 +144,13 @@ export default {
       showPreview,
       trailerUrl,
       selectedMovie,
+      playTrailer,
       searchQuery,
       searchResults,
       searchMovies,
       clearSearch,
-      showResults
+      showResults,
+      swiperInstance
     }
   }
 }
@@ -237,17 +253,15 @@ export default {
       <div class="view__content__wrapper">
         <swiper
           :modules="modules"
-          :slides-per-view="3"
           :space-between="20"
           navigation
           loop
           :loop-additional-slides="2"
-          centeredSlides
           @swiper="onSwiper"
           @slideChange="onSlideChange"
           :breakpoints="{
             1000: {
-              slidesPerView: 3,
+              slidesPerView: 4,
               spaceBetween: 20
             },
             800: {
@@ -265,11 +279,11 @@ export default {
           }"
         >
           <swiper-slide
-            class="view__card style_one"
+            class="view__card style_three"
             v-for="(movie, index) in latesMovie"
             :key="index"
             :style="{
-              backgroundImage: `url('https://image.tmdb.org/t/p/w1280${movie.backdrop_path}')`
+              backgroundImage: `url('https://image.tmdb.org/t/p/w1280${movie.poster_path}')`
             }"
           >
             <div class="view__card__title">
@@ -454,7 +468,11 @@ export default {
     </div>
   </div>
 </template>
+
 <style lang="scss">
+.swiper {
+  width: 100%;
+}
 .preview {
   position: fixed;
   top: 100%;
