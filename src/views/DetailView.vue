@@ -208,6 +208,11 @@ export default {
     }
     .container {
       max-width: 800px;
+
+      @media (max-width: 800px) {
+        max-width: 100%;
+        padding: 20px;
+      }
     }
 
     .type,
@@ -380,12 +385,22 @@ export default {
         overflow: hidden;
         border-radius: 10px;
         cursor: pointer;
+
+        @media (max-width: 800px) {
+          width: 100%;
+          aspect-ratio: 9 / 13;
+        }
         .movie_card_image {
           width: 250px;
           height: 400px;
           background-size: cover;
           background-position: center;
           background-repeat: no-repeat;
+
+          @media (max-width: 800px) {
+            width: 100%;
+            height: 100%;
+          }
         }
         .movie_card_title {
           position: absolute;
