@@ -448,6 +448,7 @@ export default {
   <footer>
     <div class="container">
       <p>포트폴리오용 페이지 입니다.</p>
+      <p>상업적 이용을 불허하며 수익이 발생하지 않습니다.</p>
     </div>
   </footer>
   <div class="preview" :class="{ active: showPreview }">
@@ -872,9 +873,12 @@ footer {
   div {
     height: 100%;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    color: var(--white);
   }
 }
 </style>
