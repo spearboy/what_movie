@@ -500,6 +500,9 @@ export default {
         text-align: right;
         width: 30%;
         font-size: 20px;
+        @media (max-width: 1400px) {
+          width: 100%;
+        }
         &.title {
           font-size: 30px;
           font-weight: bold;
